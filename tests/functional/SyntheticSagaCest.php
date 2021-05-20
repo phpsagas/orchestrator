@@ -33,6 +33,7 @@ use PhpSagas\Orchestrator\Tests\_support\Implementation\InMemorySagaInstanceRepo
 use PhpSagas\Orchestrator\Tests\_support\Implementation\JsonEncodeMessagePayloadSerializer;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\JsonEncodeSagaSerializer;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageProducer;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Oleg Filatov <phpsagas@gmail.com>
@@ -181,12 +182,26 @@ class SyntheticSagaCest
             }
         };
 
+        $creatorLogger = \Mockery::mock(LoggerInterface::class);
+        $creatorLogger->shouldReceive('info')->twice();
+
+        $processorLogger = \Mockery::mock(LoggerInterface::class);
+        $processorLogger->shouldReceive('info')->atLeast();
+
+        $handlerLogger = \Mockery::mock(LoggerInterface::class);
+        $handlerLogger->shouldReceive('info')->twice();
+
         $sagaCommandProducer = new SagaCommandProducer($messageProducer, $this->messageFactory, $this->payloadSerializer);
         $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $sagaCommandProducer);
         $sagaReplyHandler = new SagaReplyHandler($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $sagaFactory, $sagaActionsProcessor);
         $this->replyMessageProducer->setSagaReplyHandler($sagaReplyHandler);
 
         $sagaCreator = new SagaCreator($this->instanceRepo, $this->instanceFactory, $this->sagaLocker, $sagaActionsProcessor);
+
+        $sagaCreator->setLogger($creatorLogger);
+        $sagaActionsProcessor->setLogger($processorLogger);
+        $sagaReplyHandler->setLogger($handlerLogger);
+
         $sagaCreator->create($saga, $sagaData);
     }
 
