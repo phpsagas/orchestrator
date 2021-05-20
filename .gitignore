@@ -1,0 +1,5 @@
+/vendor
+.phpcs-cache
+composer.lock
+/tests/_output
+/tests/_support/_generated

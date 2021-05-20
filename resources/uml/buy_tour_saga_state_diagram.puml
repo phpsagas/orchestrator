@@ -1,0 +1,41 @@
+
+@startuml
+state BuyTour #white
+state BookTicket #white
+state BookHotel #white
+state ObtainVisa #white
+state RejectTicket #red
+state RejectTour #red
+state RejectHotel #red
+state ApproveTour #green
+state ApproveTicket #green
+state ApproveHotel #green
+
+state buyTourChoice <<choice>>
+state bookTicketChoice <<choice>>
+state bookHotelChoice <<choice>>
+state obtainVisaChoice <<choice>>
+
+state endFinished <<end>>
+state endFailed <<end>>
+
+[*] -left-> BuyTour : buyTour
+BuyTour --> buyTourChoice
+buyTourChoice -left-> BookTicket : success
+buyTourChoice --> endFailed : failure
+BookTicket --> bookTicketChoice
+bookTicketChoice -left-> BookHotel : success
+bookTicketChoice --> RejectTour : failure
+RejectTour --right> endFailed
+BookHotel --> bookHotelChoice
+bookHotelChoice -left-> ObtainVisa : success
+bookHotelChoice --> RejectTicket : failure
+RejectTicket -right-> RejectTour
+ObtainVisa --> obtainVisaChoice
+obtainVisaChoice --> ApproveHotel : success
+obtainVisaChoice -right-> RejectHotel : failure
+RejectHotel -right-> RejectTicket
+ApproveHotel -right-> ApproveTicket
+ApproveTicket -right-> ApproveTour
+ApproveTour -right-> endFinished
+@enduml

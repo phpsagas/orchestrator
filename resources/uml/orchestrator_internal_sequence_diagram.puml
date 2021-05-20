@@ -1,0 +1,41 @@
+@startuml
+box orchestrator
+participant Creator AS SC
+participant "Instance\nFactory" AS SIF
+database "Instance\nRepo" AS SIP
+participant Saga AS S
+participant "Actions\nProcessor" AS SAP
+participant "Command\nProducer" AS SCP
+participant "Message\nProducer" AS MP
+participant "Reply\nHandler" AS SRH
+end box
+participant Locker AS SL
+participant Broker AS B
+
+-> SC : createSaga(saga)
+SC -> SIF : make\nInstance
+SIF -> SC : saga\nInstance
+SC -> SIP : save
+SC -> SL : lock
+SC -> S : onStarted
+<- S : notifySagaCreated
+SC -> S : start
+SC -> SAP : process
+SAP -> SAP : update\nSaga\nState
+SAP -> SIP : save
+SAP -> SCP : send
+SCP -> MP : send
+MP -> B
+B -> : remoteCommand
+B <- : commandReply
+B -> SRH : handleReply
+SRH -> SIP : find
+SIP -> SRH : sagaInstance
+SRH -> S : handleReply
+SRH -> SAP : process
+SAP -> SIP : save
+SAP -> S : onFinished
+<- S : notifySagaFinished
+SAP -> SL : unlock
+
+@enduml

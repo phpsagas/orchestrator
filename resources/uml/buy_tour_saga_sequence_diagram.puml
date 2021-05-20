@@ -1,0 +1,70 @@
+@startuml
+participant User AS U
+box "Tour Service"
+participant Service as T_S
+participant Orchestrator as O
+end box
+
+participant Hotel as H
+participant Ticket as T
+participant Visa as V
+
+activate U
+U -> T_S ++ : BuyTour
+T_S -> O ++ : createSaga
+
+O -> T_S: buyTour
+T_S -> T_S: create pending
+T_S -> O: success
+T_S -> U -- : pending
+deactivate U
+
+O -> H -- : bookHotel
+activate H
+H -> H: book pending
+note left: compensatable
+H -> O: success
+deactivate H
+
+activate O
+O -> T -- : bookTickets
+activate T
+T -> T: book pending
+T -> O: success
+deactivate T
+activate O
+O -> V -- : obtainVisa
+activate V
+V -> V: obtain
+note left: pivot
+V -> O: success
+deactivate V
+activate O
+O -> T_S: handleObtain
+activate T_S
+deactivate T_S
+O -> T -- : confirm
+activate T
+T -> T: approve
+note left: retryable
+T -> O: success
+deactivate T
+activate O
+O -> H -- : confirm
+activate H
+H -> H: approve
+H -> O: success
+deactivate H
+activate O
+O -> T_S -- : confirm
+activate T_S
+T_S -> T_S: approve
+T_S -> O: success
+deactivate T_S
+activate O
+O -> T_S -- : sagaFinished
+activate T_S
+T_S -> U: success
+deactivate T_S
+
+@enduml
