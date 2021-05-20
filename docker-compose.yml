@@ -1,0 +1,13 @@
+version: "3"
+services:
+    php-sagas-orchestrator:
+        build:
+            context: ./resources/docker
+            args:
+                - DOCKER_USER
+                - UID
+        container_name: php-sagas-orchestrator
+        hostname: php-sagas-orchestrator
+        restart: on-failure
+        volumes:
+            - .:/var/www
