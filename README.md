@@ -1,5 +1,7 @@
 # Saga Orchestrator
 
+[![codecov](https://codecov.io/gh/phpsagas/orchestrator/branch/master/graph/badge.svg?token=P0S5HDTRTG)](https://codecov.io/gh/phpsagas/orchestrator)
+
 ## Table Of Contents
 - [Introduction](#introduction)
 - [Requirements](#requirements)
