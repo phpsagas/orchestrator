@@ -2,9 +2,9 @@
 
 namespace PhpSagas\Orchestrator\InstantiationEngine;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\SagaSerializerInterface;
+use PhpSagas\Contracts\SagaSerializerInterface;
 
 /**
  * @author Oleg Filatov <phpsagas@gmail.com>

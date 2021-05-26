@@ -27,7 +27,7 @@ More details about sagas you can found on the [Chris Richardson site](https://ch
 ## Requirements  
 - php: >= 7.1
 - ext-json
-- [phpsagas/common](https://github.com/phpsagas/common)
+- [phpsagas/contracts](https://github.com/phpsagas/contracts)
 - psr/log: ^1.1
 
 ## About package
@@ -53,8 +53,6 @@ There are some interfaces you have to implement (or use existing implementations
 - `MessagePayloadSerializerInterface` - serialize participant commands data messages ([symfony/serializer implementation](https://github.com/phpsagas/serializer-bridge))
 - `SagaSerializerInterface` - serialize sagas data ([symfony/serializer implementation](https://github.com/phpsagas/serializer-bridge))
 - `MessageProducerInterface` - messages sender ([symfony/messenger implementation](https://github.com/phpsagas/messenger-bridge)))  
-
-Also, [common](https://github.com/phpsagas/common) packages interfaces should be implemented:
 - `MessageIdGeneratorInterface` - generate message ids ([uuid implementation](https://github.com/phpsagas/message-id-generator)).    
 
 Next, it is necessary to configure base orchestrator services - `Saga Creator` and `SagaReplyHandler`. You can do it using your favourite service-container ([symfony autowiring](https://symfony.com/doc/current/service_container.html#the-autowire-option), [pimple](https://github.com/silexphp/pimple), [PHP-DI](https://php-di.org/), etc) or manually (see below).  

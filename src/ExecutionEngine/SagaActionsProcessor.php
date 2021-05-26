@@ -2,11 +2,13 @@
 
 namespace PhpSagas\Orchestrator\ExecutionEngine;
 
-use PhpSagas\Common\Message\MessageIdGeneratorInterface;
+use PhpSagas\Contracts\MessageIdGeneratorInterface;
+use PhpSagas\Contracts\ReplyMessageFactoryInterface;
+use PhpSagas\Contracts\ReplyMessageInterface;
+use PhpSagas\Contracts\SagaSerializerInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaActions;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
-use PhpSagas\Common\Message\ReplyMessage;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaInstanceInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -31,6 +33,8 @@ class SagaActionsProcessor implements SagaActionsProcessorInterface
     private $messageIdGenerator;
     /** @var SagaLockerInterface */
     private $sagaLocker;
+    /** @var ReplyMessageFactoryInterface */
+    private $replyMessageFactory;
     /** @var LoggerInterface */
     private $logger;
 
@@ -40,6 +44,7 @@ class SagaActionsProcessor implements SagaActionsProcessorInterface
         SagaExecutionStateSerializerInterface $executionStateSerializer,
         MessageIdGeneratorInterface $messageIdGenerator,
         SagaLockerInterface $sagaLocker,
+        ReplyMessageFactoryInterface $replyMessageFactory,
         SagaCommandProducerInterface $sagaCommandProducer
     ) {
         $this->sagaInstanceRepo = $sagaInstanceRepo;
@@ -48,6 +53,7 @@ class SagaActionsProcessor implements SagaActionsProcessorInterface
         $this->messageIdGenerator = $messageIdGenerator;
         $this->sagaCommandProducer = $sagaCommandProducer;
         $this->sagaLocker = $sagaLocker;
+        $this->replyMessageFactory = $replyMessageFactory;
         $this->logger = new NullLogger();
     }
 
@@ -80,7 +86,7 @@ class SagaActionsProcessor implements SagaActionsProcessorInterface
                 $actions = $saga->getSagaDefinition()->handleReply(
                     $executionState,
                     $actions->getUpdatedSagaDataOrFail(),
-                    ReplyMessage::makeEmptyFailure($sagaId)
+                    $this->makeEmptyFailureReplyMessage($sagaId)
                 );
             } else {
                 $executionState = $actions->getExecutionState();
@@ -127,7 +133,7 @@ class SagaActionsProcessor implements SagaActionsProcessorInterface
                     $actions = $saga->getSagaDefinition()->handleReply(
                         $executionState,
                         $updatedSagaData,
-                        ReplyMessage::makeEmptySuccess($sagaId)
+                        $this->makeEmptySuccessReplyMessage($sagaId)
                     );
                 } else {
                     $command = $actions->getCommand();
@@ -141,5 +147,25 @@ class SagaActionsProcessor implements SagaActionsProcessorInterface
                 }
             }
         }
+    }
+
+    /**
+     * @param string $sagaId
+     *
+     * @return ReplyMessageInterface
+     */
+    private function makeEmptyFailureReplyMessage(string $sagaId): ReplyMessageInterface
+    {
+        return $this->replyMessageFactory->makeFailure($sagaId, '', '{}');
+    }
+
+    /**
+     * @param string $sagaId
+     *
+     * @return ReplyMessageInterface
+     */
+    private function makeEmptySuccessReplyMessage(string $sagaId): ReplyMessageInterface
+    {
+        return $this->replyMessageFactory->makeSuccess($sagaId, '', '{}');
     }
 }

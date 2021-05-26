@@ -4,14 +4,14 @@ namespace PhpSagas\Orchestrator\Tests;
 
 use Codeception\Test\Unit;
 use Codeception\Util\Stub;
+use PhpSagas\Contracts\ReplyMessageInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PhpSagas\Common\Message\ReplyMessage;
 use PhpSagas\Orchestrator\ExecutionEngine\HandleReplyFailedException;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaActionsProcessor;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaExecutionStateSerializerInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaInstanceRepositoryInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaReplyHandler;
-use PhpSagas\Orchestrator\ExecutionEngine\SagaSerializerInterface;
+use PhpSagas\Contracts\SagaSerializerInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaFactoryInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaInstanceInterface;
 
@@ -41,8 +41,8 @@ class SagaReplyHandlerTest extends Unit
         $sagaFactory = Stub::makeEmpty(SagaFactoryInterface::class);
         /** @var SagaActionsProcessor|MockObject $sagaActionsProcessor */
         $sagaActionsProcessor = Stub::makeEmpty(SagaActionsProcessor::class);
-        /** @var ReplyMessage|MockObject $message */
-        $message = Stub::makeEmpty(ReplyMessage::class, ['getCorrelationId' => '2']);
+        /** @var ReplyMessageInterface|MockObject $message */
+        $message = Stub::makeEmpty(ReplyMessageInterface::class, ['getCorrelationId' => '2']);
 
         $this->expectException(HandleReplyFailedException::class);
 
@@ -75,8 +75,8 @@ class SagaReplyHandlerTest extends Unit
         $sagaFactory = Stub::makeEmpty(SagaFactoryInterface::class);
         /** @var SagaActionsProcessor|MockObject $sagaActionsProcessor */
         $sagaActionsProcessor = Stub::makeEmpty(SagaActionsProcessor::class);
-        /** @var ReplyMessage|MockObject $message */
-        $message = Stub::makeEmpty(ReplyMessage::class, ['getCorrelationId' => '1']);
+        /** @var ReplyMessageInterface|MockObject $message */
+        $message = Stub::makeEmpty(ReplyMessageInterface::class, ['getCorrelationId' => '1']);
 
         $sagaActionsProcessor->expects(self::once())->method('processActions');
 

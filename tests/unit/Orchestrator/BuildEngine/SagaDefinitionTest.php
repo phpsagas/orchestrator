@@ -4,10 +4,10 @@ namespace PhpSagas\Orchestrator\Tests;
 
 use Codeception\Stub;
 use Codeception\Test\Unit;
+use PhpSagas\Contracts\ReplyMessageInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PhpSagas\Common\Message\ReplyMessage;
 use PhpSagas\Orchestrator\BuildEngine\ReplyHandlerInterface;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinition;
 use PhpSagas\Orchestrator\BuildEngine\SagaExecutionState;
 use PhpSagas\Orchestrator\BuildEngine\SagaStepInterface;
@@ -65,8 +65,8 @@ class SagaDefinitionTest extends Unit
         $executionState = Stub::makeEmpty(SagaExecutionState::class);
         /** @var SagaDataInterface|MockObject $sagaData */
         $sagaData = Stub::makeEmpty(SagaDataInterface::class);
-        /** @var ReplyMessage|MockObject $replyMessage */
-        $replyMessage = Stub::makeEmpty(ReplyMessage::class);
+        /** @var ReplyMessageInterface|MockObject $replyMessage */
+        $replyMessage = Stub::makeEmpty(ReplyMessageInterface::class);
 
         $definition = new SagaDefinition([$sagaStep]);
 
@@ -92,8 +92,8 @@ class SagaDefinitionTest extends Unit
         $executionState = Stub::makeEmpty(SagaExecutionState::class);
         /** @var SagaDataInterface|MockObject $sagaData */
         $sagaData = Stub::makeEmpty(SagaDataInterface::class);
-        /** @var ReplyMessage|MockObject $replyMessage */
-        $replyMessage = Stub::makeEmpty(ReplyMessage::class);
+        /** @var ReplyMessageInterface|MockObject $replyMessage */
+        $replyMessage = Stub::makeEmpty(ReplyMessageInterface::class);
 
         $definition = new SagaDefinition([$sagaStep]);
 

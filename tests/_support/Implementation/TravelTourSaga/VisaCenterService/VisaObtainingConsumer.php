@@ -2,8 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\VisaCenterService;
 
-use PhpSagas\Common\Message\CommandMessage;
-use PhpSagas\Common\Message\ReplyMessageFactoryInterface;
+use PhpSagas\Contracts\CommandMessageInterface;
+use PhpSagas\Contracts\ReplyMessageFactoryInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageProducer;
 
 /**
@@ -27,7 +27,7 @@ class VisaObtainingConsumer
         $this->replyMessageProducer = $replyMessageProducer;
     }
 
-    public function handleVisaObtained(CommandMessage $message)
+    public function handleVisaObtained(CommandMessageInterface $message)
     {
         if ($this->isVisaObtainingHandlerBroken) {
             $message = $this->replyMessageFactory->makeFailure($message->getSagaId(), $message->getId(), '{}');

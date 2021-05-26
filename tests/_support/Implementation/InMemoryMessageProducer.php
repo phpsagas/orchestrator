@@ -2,8 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation;
 
-use PhpSagas\Common\Message\CommandMessage;
-use PhpSagas\Orchestrator\ExecutionEngine\MessageProducerInterface;
+use PhpSagas\Contracts\CommandMessageInterface;
+use PhpSagas\Contracts\MessageProducerInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\Command\BookHotelCommand;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\Command\BookTicketsCommand;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\Command\ConfirmHotelBookingCommand;
@@ -37,7 +37,7 @@ class InMemoryMessageProducer implements MessageProducerInterface
         $this->visaConsumer = $visaConsumer;
     }
 
-    public function send(CommandMessage $message): void
+    public function send(CommandMessageInterface $message): void
     {
         switch ($message->getCommandType()) {
             case BookTicketsCommand::COMMAND_TYPE:

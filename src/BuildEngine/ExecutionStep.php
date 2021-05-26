@@ -2,6 +2,8 @@
 
 namespace PhpSagas\Orchestrator\BuildEngine;
 
+use PhpSagas\Contracts\SagaDataInterface;
+
 /**
  * Step of saga execution.
  *

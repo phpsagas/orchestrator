@@ -2,8 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation;
 
-use PhpSagas\Orchestrator\Command\CommandDataInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\MessagePayloadSerializerInterface;
+use PhpSagas\Contracts\CommandDataInterface;
+use PhpSagas\Contracts\MessagePayloadSerializerInterface;
 
 /**
  * @author Oleg Filatov <phpsagas@gmail.com>

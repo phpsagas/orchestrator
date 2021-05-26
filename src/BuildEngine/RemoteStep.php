@@ -2,6 +2,7 @@
 
 namespace PhpSagas\Orchestrator\BuildEngine;
 
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\Command\RemoteCommandInterface;
 
 /**

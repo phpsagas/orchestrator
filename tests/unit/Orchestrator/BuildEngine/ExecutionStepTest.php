@@ -5,7 +5,7 @@ namespace PhpSagas\Orchestrator\Tests;
 use Codeception\Stub;
 use Codeception\Test\Unit;
 use PHPUnit\Framework\MockObject\MockObject;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaExecutionState;
 use PhpSagas\Orchestrator\BuildEngine\SagaStepInterface;
 use PhpSagas\Orchestrator\BuildEngine\ExecutionStep;

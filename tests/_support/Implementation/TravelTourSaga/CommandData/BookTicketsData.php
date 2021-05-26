@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\CommandData;
 
-use PhpSagas\Orchestrator\Command\CommandDataInterface;
+use PhpSagas\Contracts\CommandDataInterface;
 
 /**
  * @author Oleg Filatov <phpsagas@gmail.com>

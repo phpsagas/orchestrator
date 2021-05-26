@@ -2,8 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\Command;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
-use PhpSagas\Orchestrator\Command\CommandDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
+use PhpSagas\Contracts\CommandDataInterface;
 use PhpSagas\Orchestrator\Command\RemoteCommandInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\CommandExecutionDetectorInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\CommandData\BookTicketsData;

@@ -2,7 +2,8 @@
 
 namespace PhpSagas\Orchestrator\BuildEngine;
 
-use PhpSagas\Common\Message\ReplyMessage;
+use PhpSagas\Contracts\ReplyMessageInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 
 /**
  * Contains saga steps definition.
@@ -31,16 +32,16 @@ class SagaDefinition
     }
 
     /**
-     * @param SagaExecutionState $executionState
-     * @param SagaDataInterface  $sagaData
-     * @param ReplyMessage       $message
+     * @param SagaExecutionState    $executionState
+     * @param SagaDataInterface     $sagaData
+     * @param ReplyMessageInterface $message
      *
      * @return SagaActions
      */
     public function handleReply(
         SagaExecutionState $executionState,
         SagaDataInterface $sagaData,
-        ReplyMessage $message
+        ReplyMessageInterface $message
     ): SagaActions {
         $currentStep = $this->sagaSteps[$executionState->getCurrentStepIndex()];
         $isCompensating = $executionState->isCompensating();

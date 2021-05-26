@@ -2,8 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\HotelService;
 
-use PhpSagas\Common\Message\CommandMessage;
-use PhpSagas\Common\Message\ReplyMessageFactoryInterface;
+use PhpSagas\Contracts\CommandMessageInterface;
+use PhpSagas\Contracts\ReplyMessageFactoryInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageProducer;
 
 /**
@@ -27,7 +27,7 @@ class HotelBookingConsumer
         $this->replyMessageProducer = $replyMessageProducer;
     }
 
-    public function handleHotelBooked(CommandMessage $message): void
+    public function handleHotelBooked(CommandMessageInterface $message): void
     {
         if ($this->isHotelBookingHandlerBroken) {
             $message = $this->replyMessageFactory->makeFailure($message->getSagaId(), $message->getId(), '{}');
@@ -39,14 +39,14 @@ class HotelBookingConsumer
         $this->replyMessageProducer->send($message);
     }
 
-    public function handleBookingRejected(CommandMessage $message): void
+    public function handleBookingRejected(CommandMessageInterface $message): void
     {
         $this->replyMessageProducer->send(
             $this->replyMessageFactory->makeSuccess($message->getSagaId(), $message->getId(), '{}')
         );
     }
 
-    public function handleBookingConfirmed(CommandMessage $message): void
+    public function handleBookingConfirmed(CommandMessageInterface $message): void
     {
         $this->replyMessageProducer->send(
             $this->replyMessageFactory->makeSuccess($message->getSagaId(), $message->getId(), '{}')

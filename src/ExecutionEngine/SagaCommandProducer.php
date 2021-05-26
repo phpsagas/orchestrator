@@ -2,8 +2,10 @@
 
 namespace PhpSagas\Orchestrator\ExecutionEngine;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
-use PhpSagas\Common\Message\CommandMessageFactoryInterface;
+use PhpSagas\Contracts\CommandMessageFactoryInterface;
+use PhpSagas\Contracts\MessagePayloadSerializerInterface;
+use PhpSagas\Contracts\MessageProducerInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\Command\RemoteCommandInterface;
 
 /**

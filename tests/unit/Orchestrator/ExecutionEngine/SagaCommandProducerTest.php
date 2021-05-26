@@ -4,13 +4,13 @@ namespace PhpSagas\Orchestrator\Tests;
 
 use Codeception\Test\Unit;
 use Codeception\Util\Stub;
+use PhpSagas\Contracts\CommandMessageFactoryInterface;
+use PhpSagas\Contracts\CommandMessageInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PhpSagas\Common\Message\CommandMessage;
-use PhpSagas\Common\Message\CommandMessageFactoryInterface;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\Command\RemoteCommandInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\MessagePayloadSerializerInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\MessageProducerInterface;
+use PhpSagas\Contracts\MessagePayloadSerializerInterface;
+use PhpSagas\Contracts\MessageProducerInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaCommandProducer;
 
 /**
@@ -59,8 +59,8 @@ class SagaCommandProducerTest extends Unit
         $sagaData = Stub::makeEmpty(SagaDataInterface::class);
         /** @var RemoteCommandInterface|MockObject $command */
         $command = Stub::makeEmpty(RemoteCommandInterface::class, ['getSagaDataClassName' => get_class($sagaData)]);
-        /** @var CommandMessage|MockObject $commandMessage */
-        $commandMessage = Stub::makeEmpty(CommandMessage::class);
+        /** @var CommandMessageInterface|MockObject $commandMessage */
+        $commandMessage = Stub::makeEmpty(CommandMessageInterface::class);
 
         $messageFactory->expects(self::once())->method('createCommandMessage')->willReturn($commandMessage);
         $messageProducer->expects(self::once())->method('send')->with($commandMessage);

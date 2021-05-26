@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation;
 
-use PhpSagas\Common\Message\ReplyMessage;
+use PhpSagas\Contracts\ReplyMessageInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaReplyHandler;
 
 /**
@@ -24,7 +24,7 @@ class ReplyMessageProducer
         return $this;
     }
 
-    public function send(ReplyMessage $message): void
+    public function send(ReplyMessageInterface $message): void
     {
         $this->sagaReplyHandler->handleReply($message);
     }

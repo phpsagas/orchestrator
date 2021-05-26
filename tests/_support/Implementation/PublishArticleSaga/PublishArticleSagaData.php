@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\PublishArticleSaga;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 
 /**
  * @author Oleg Filatov <phpsagas@gmail.com>

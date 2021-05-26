@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Command;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 
 /**
  * Should be implemented by commands execute some logic in _current_ project.

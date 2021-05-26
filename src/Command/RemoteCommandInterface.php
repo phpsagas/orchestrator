@@ -2,7 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Command;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\CommandDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 
 /**
  * Should be implemented by classes prepare command messages to perform operations outside of current project.

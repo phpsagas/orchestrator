@@ -6,7 +6,7 @@ use Codeception\Test\Unit;
 use Codeception\Util\Stub;
 use PHPUnit\Framework\MockObject\MockObject;
 use PhpSagas\Orchestrator\BuildEngine\SagaActions;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinition;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
 use PhpSagas\Orchestrator\Command\LocalCommandException;
@@ -14,7 +14,7 @@ use PhpSagas\Orchestrator\ExecutionEngine\SagaActionsProcessor;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaCreator;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaInstanceRepositoryInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaLockerInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\SagaSerializerInterface;
+use PhpSagas\Contracts\SagaSerializerInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaInstanceFactoryInterface;
 
 /**

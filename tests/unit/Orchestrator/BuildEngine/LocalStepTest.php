@@ -7,7 +7,7 @@ use Codeception\Test\Unit;
 use PHPUnit\Framework\MockObject\MockObject;
 use PhpSagas\Orchestrator\BuildEngine\LocalStep;
 use PhpSagas\Orchestrator\BuildEngine\SagaActions;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\Command\LocalCommandInterface;
 
 /**

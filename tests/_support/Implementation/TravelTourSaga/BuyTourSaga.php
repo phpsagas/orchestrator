@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinition;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinitionBuilder;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;

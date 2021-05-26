@@ -2,8 +2,8 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\FlightTicketService;
 
-use PhpSagas\Common\Message\CommandMessage;
-use PhpSagas\Common\Message\ReplyMessageFactoryInterface;
+use PhpSagas\Contracts\CommandMessageInterface;
+use PhpSagas\Contracts\ReplyMessageFactoryInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageProducer;
 
 /**
@@ -27,7 +27,7 @@ class TicketsBookingConsumer
         $this->replyMessageProducer = $replyMessageProducer;
     }
 
-    public function handleTicketsBooked(CommandMessage $message)
+    public function handleTicketsBooked(CommandMessageInterface $message)
     {
         if ($this->isTicketsBookingHandlerBroken) {
             $message = $this->replyMessageFactory->makeFailure($message->getSagaId(), $message->getId(), '{}');
@@ -39,14 +39,14 @@ class TicketsBookingConsumer
         $this->replyMessageProducer->send($message);
     }
 
-    public function handleBookingRejected(CommandMessage $message)
+    public function handleBookingRejected(CommandMessageInterface $message)
     {
         $this->replyMessageProducer->send(
             $this->replyMessageFactory->makeSuccess($message->getSagaId(), $message->getId(), '{}')
         );
     }
 
-    public function handleBookingConfirmed(CommandMessage $message)
+    public function handleBookingConfirmed(CommandMessageInterface $message)
     {
         $this->replyMessageProducer->send(
             $this->replyMessageFactory->makeSuccess($message->getSagaId(), $message->getId(), '{}')

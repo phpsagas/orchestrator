@@ -2,23 +2,21 @@
 
 namespace PhpSagas\Orchestrator\Tests;
 
-use PhpSagas\Common\Message\CommandMessage;
-use PhpSagas\Common\Message\DefaultCommandMessageFactory;
-use PhpSagas\Common\Message\DefaultReplyMessageFactory;
-use PhpSagas\Common\Message\ReplyMessage;
-use PhpSagas\Common\Message\ReplyMessageFactoryInterface;
+use PhpSagas\Contracts\CommandMessageInterface;
+use PhpSagas\Contracts\ReplyMessageFactoryInterface;
+use PhpSagas\Contracts\ReplyMessageInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\DefaultSagaInstanceFactory;
 use PhpSagas\Orchestrator\BuildEngine\ReplyHandlerInterface;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinitionBuilder;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
 use PhpSagas\Orchestrator\BuildEngine\StepBuilder;
-use PhpSagas\Orchestrator\Command\CommandDataInterface;
+use PhpSagas\Contracts\CommandDataInterface;
 use PhpSagas\Orchestrator\Command\LocalCommandException;
 use PhpSagas\Orchestrator\Command\LocalCommandInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinition;
 use PhpSagas\Orchestrator\Command\RemoteCommandInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\MessageProducerInterface;
+use PhpSagas\Contracts\MessageProducerInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\NullSagaLocker;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaActionsProcessor;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaCommandProducer;
@@ -28,10 +26,12 @@ use PhpSagas\Orchestrator\ExecutionEngine\SagaReplyHandler;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaFactoryInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\CommandExecutionDetectorInterface;
 use PhpSagas\Orchestrator\BuildEngine\EmptySagaData;
+use PhpSagas\Orchestrator\Tests\_support\Implementation\CommandMessageFactory;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\InMemoryMessageIdGenerator;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\InMemorySagaInstanceRepository;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\JsonEncodeMessagePayloadSerializer;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\JsonEncodeSagaSerializer;
+use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageFactory;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageProducer;
 use Psr\Log\LoggerInterface;
 
@@ -60,9 +60,9 @@ class SyntheticSagaCest
         $this->instanceFactory = new DefaultSagaInstanceFactory($this->sagaSerializer);
         $this->stateSerializer = new SagaExecutionStateSerializer();
         $this->messageIdGenerator = new InMemoryMessageIdGenerator();
-        $this->replyMessageFactory = new DefaultReplyMessageFactory($this->messageIdGenerator);
+        $this->replyMessageFactory = new ReplyMessageFactory();
         $this->replyMessageProducer = new ReplyMessageProducer();
-        $this->messageFactory = new DefaultCommandMessageFactory();
+        $this->messageFactory = new CommandMessageFactory();
         $this->payloadSerializer = new JsonEncodeMessagePayloadSerializer();
         $this->sagaLocker = new NullSagaLocker();
     }
@@ -175,7 +175,7 @@ class SyntheticSagaCest
                 $this->replyMessageFactory = $replyMessageFactory;
             }
 
-            public function send(CommandMessage $message): void
+            public function send(CommandMessageInterface $message): void
             {
                 // FAILURE for compensation starting
                 $this->replyMessageProducer->send($this->replyMessageFactory->makeFailure($message->getSagaId(), $message->getId(), '{}'));
@@ -192,7 +192,7 @@ class SyntheticSagaCest
         $handlerLogger->shouldReceive('info')->twice();
 
         $sagaCommandProducer = new SagaCommandProducer($messageProducer, $this->messageFactory, $this->payloadSerializer);
-        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $sagaCommandProducer);
+        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $this->replyMessageFactory, $sagaCommandProducer);
         $sagaReplyHandler = new SagaReplyHandler($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $sagaFactory, $sagaActionsProcessor);
         $this->replyMessageProducer->setSagaReplyHandler($sagaReplyHandler);
 
@@ -303,7 +303,7 @@ class SyntheticSagaCest
                 $this->replyMessageFactory = $replyMessageFactory;
             }
 
-            public function send(CommandMessage $message): void
+            public function send(CommandMessageInterface $message): void
             {
                 // FAILURE for compensation starting
                 $this->replyMessageProducer->send($this->replyMessageFactory->makeFailure($message->getSagaId(), $message->getId(), '{}'));
@@ -311,7 +311,7 @@ class SyntheticSagaCest
         };
 
         $sagaCommandProducer = new SagaCommandProducer($messageProducer, $this->messageFactory, $this->payloadSerializer);
-        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $sagaCommandProducer);
+        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $this->replyMessageFactory, $sagaCommandProducer);
         $sagaReplyHandler = new SagaReplyHandler($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $sagaFactory, $sagaActionsProcessor);
         $this->replyMessageProducer->setSagaReplyHandler($sagaReplyHandler);
 
@@ -358,7 +358,7 @@ class SyntheticSagaCest
 
             public function __construct($detector) { $this->detector = $detector; }
 
-            public function handle(ReplyMessage $message, SagaDataInterface $sagaData): void
+            public function handle(ReplyMessageInterface $message, SagaDataInterface $sagaData): void
             {
                 $this->detector->execute();
             }
@@ -429,7 +429,7 @@ class SyntheticSagaCest
                 $this->replyMessageFactory = $replyMessageFactory;
             }
 
-            public function send(CommandMessage $message): void
+            public function send(CommandMessageInterface $message): void
             {
                 $this->replyMessageProducer->send(('success' === $message->getCommandType())
                     ? $this->replyMessageFactory->makeSuccess($message->getSagaId(), $message->getId(), '{}')
@@ -439,7 +439,7 @@ class SyntheticSagaCest
         };
 
         $sagaCommandProducer = new SagaCommandProducer($messageProducer, $this->messageFactory, $this->payloadSerializer);
-        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $sagaCommandProducer);
+        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $this->replyMessageFactory, $sagaCommandProducer);
         $sagaReplyHandler = new SagaReplyHandler($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $sagaFactory, $sagaActionsProcessor);
         $this->replyMessageProducer->setSagaReplyHandler($sagaReplyHandler);
 
@@ -532,11 +532,11 @@ class SyntheticSagaCest
 
         $messageProducer = new class implements MessageProducerInterface
         {
-            public function send(CommandMessage $message): void {}
+            public function send(CommandMessageInterface $message): void {}
         };
 
         $sagaCommandProducer = new SagaCommandProducer($messageProducer, $this->messageFactory, $this->payloadSerializer);
-        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $sagaCommandProducer);
+        $sagaActionsProcessor = new SagaActionsProcessor($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $this->messageIdGenerator, $this->sagaLocker, $this->replyMessageFactory, $sagaCommandProducer);
         $sagaReplyHandler = new SagaReplyHandler($this->instanceRepo, $this->sagaSerializer, $this->stateSerializer, $sagaFactory, $sagaActionsProcessor);
         $this->replyMessageProducer->setSagaReplyHandler($sagaReplyHandler);
 

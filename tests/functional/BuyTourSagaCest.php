@@ -3,8 +3,6 @@
 namespace PhpSagas\Orchestrator\Tests;
 
 use Mockery\MockInterface;
-use PhpSagas\Common\Message\DefaultCommandMessageFactory;
-use PhpSagas\Common\Message\DefaultReplyMessageFactory;
 use PhpSagas\Orchestrator\InstantiationEngine\DefaultSagaInstanceFactory;
 use PhpSagas\Orchestrator\ExecutionEngine\NullSagaLocker;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaActionsProcessor;
@@ -15,11 +13,13 @@ use PhpSagas\Orchestrator\ExecutionEngine\SagaReplyHandler;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaStatusEnum;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaFactoryInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\CommandExecutionDetectorInterface;
+use PhpSagas\Orchestrator\Tests\_support\Implementation\CommandMessageFactory;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\InMemoryMessageIdGenerator;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\InMemoryMessageProducer;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\InMemorySagaInstanceRepository;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\JsonEncodeMessagePayloadSerializer;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\JsonEncodeSagaSerializer;
+use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageFactory;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageProducer;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\SagaExecutionDetectorInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\SagaFactory;
@@ -137,7 +137,7 @@ class BuyTourSagaCest
         $this->sagaSerializer = new JsonEncodeSagaSerializer();
         $executionStateSerializer = new SagaExecutionStateSerializer();
         $messageIdGenerator = new InMemoryMessageIdGenerator();
-        $replyMessageFactory = new DefaultReplyMessageFactory($messageIdGenerator);
+        $replyMessageFactory = new ReplyMessageFactory();
         $this->sagaFactory = new SagaFactory(
             $this->sagaExecutionDetector,
             $buyTourCommand,
@@ -161,12 +161,12 @@ class BuyTourSagaCest
         $this->visaConsumer = new VisaObtainingConsumer($replyMessageFactory, $replyMessageProducer);
 
         $messageProducer = new InMemoryMessageProducer($this->hotelConsumer, $this->ticketsConsumer, $this->visaConsumer);
-        $messageFactory = new DefaultCommandMessageFactory();
+        $messageFactory = new CommandMessageFactory();
         $payloadSerializer = new JsonEncodeMessagePayloadSerializer();
         $sagaCommandProducer = new SagaCommandProducer($messageProducer, $messageFactory, $payloadSerializer);
         $sagaLocker = new NullSagaLocker();
 
-        $sagaActionsProcessor = new SagaActionsProcessor($this->sagaInstanceRepo, $this->sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $sagaCommandProducer);
+        $sagaActionsProcessor = new SagaActionsProcessor($this->sagaInstanceRepo, $this->sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $replyMessageFactory, $sagaCommandProducer);
         $sagaReplyHandler = new SagaReplyHandler($this->sagaInstanceRepo, $this->sagaSerializer, $executionStateSerializer, $this->sagaFactory, $sagaActionsProcessor);
         $replyMessageProducer->setSagaReplyHandler($sagaReplyHandler);
         $sagaInstanceFactory = new DefaultSagaInstanceFactory($this->sagaSerializer);

@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\InstantiationEngine;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
 
 /**

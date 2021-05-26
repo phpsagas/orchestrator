@@ -3,7 +3,7 @@
 namespace PhpSagas\Orchestrator\ExecutionEngine;
 
 use PhpSagas\Orchestrator\BuildEngine\SagaActions;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaInstanceInterface;
 

@@ -4,10 +4,11 @@ namespace PhpSagas\Orchestrator\Tests;
 
 use Codeception\Test\Unit;
 use Codeception\Util\Stub;
+use PhpSagas\Contracts\MessageIdGeneratorInterface;
+use PhpSagas\Contracts\ReplyMessageFactoryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PhpSagas\Common\Message\MessageIdGeneratorInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaActions;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\BuildEngine\SagaDefinition;
 use PhpSagas\Orchestrator\BuildEngine\SagaInterface;
 use PhpSagas\Orchestrator\Command\RemoteCommandInterface;
@@ -16,7 +17,7 @@ use PhpSagas\Orchestrator\ExecutionEngine\SagaCommandProducerInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaExecutionStateSerializerInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaInstanceRepositoryInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaLockerInterface;
-use PhpSagas\Orchestrator\ExecutionEngine\SagaSerializerInterface;
+use PhpSagas\Contracts\SagaSerializerInterface;
 use PhpSagas\Orchestrator\ExecutionEngine\SagaStatusEnum;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaInstanceInterface;
 
@@ -53,6 +54,8 @@ class SagaActionsProcessorTest extends Unit
         $messageIdGenerator = Stub::makeEmpty(MessageIdGeneratorInterface::class);
         /** @var SagaLockerInterface $sagaLocker */
         $sagaLocker = Stub::makeEmpty(SagaLockerInterface::class);
+        /** @var ReplyMessageFactoryInterface $replyMessageFactory */
+        $replyMessageFactory = Stub::makeEmpty(ReplyMessageFactoryInterface::class);
 
         $actions->expects(self::once())->method('getLocalException')->willReturn(null);
         $actions->expects(self::once())->method('getCommand')->willReturn(
@@ -61,7 +64,13 @@ class SagaActionsProcessorTest extends Unit
         $commandProducer->expects(self::once())->method('send');
 
         $processor = new SagaActionsProcessor(
-            $instanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $commandProducer
+            $instanceRepo,
+            $sagaSerializer,
+            $executionStateSerializer,
+            $messageIdGenerator,
+            $sagaLocker,
+            $replyMessageFactory,
+            $commandProducer
         );
         $processor->processActions($saga, $sagaInstance, $sagaData, $actions);
     }
@@ -103,6 +112,8 @@ class SagaActionsProcessorTest extends Unit
         $messageIdGenerator = Stub::makeEmpty(MessageIdGeneratorInterface::class);
         /** @var SagaLockerInterface|MockObject $sagaLocker */
         $sagaLocker = Stub::makeEmpty(SagaLockerInterface::class);
+        /** @var ReplyMessageFactoryInterface $replyMessageFactory */
+        $replyMessageFactory = Stub::makeEmpty(ReplyMessageFactoryInterface::class);
 
         $actions->expects(self::exactly(2))->method('isEndState')->willReturn(false, true);
         $sagaLocker->expects(self::once())->method('unlock');
@@ -112,7 +123,13 @@ class SagaActionsProcessorTest extends Unit
         $sagaInstance->expects(self::exactly(2))->method('setStatus')->withConsecutive([SagaStatusEnum::RUNNING], [$status]);
 
         $processor = new SagaActionsProcessor(
-            $instanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $commandProducer
+            $instanceRepo,
+            $sagaSerializer,
+            $executionStateSerializer,
+            $messageIdGenerator,
+            $sagaLocker,
+            $replyMessageFactory,
+            $commandProducer
         );
         $processor->processActions($saga, $sagaInstance, $sagaData, $actions);
     }
@@ -163,13 +180,21 @@ class SagaActionsProcessorTest extends Unit
         $messageIdGenerator = Stub::makeEmpty(MessageIdGeneratorInterface::class);
         /** @var SagaLockerInterface $sagaLocker */
         $sagaLocker = Stub::makeEmpty(SagaLockerInterface::class);
+        /** @var ReplyMessageFactoryInterface $replyMessageFactory */
+        $replyMessageFactory = Stub::makeEmpty(ReplyMessageFactoryInterface::class);
 
         /** @see \PhpSagas\Orchestrator\ExecutionEngine\SagaActionsProcessor::MAX_CONSECUTIVE_LOCAL_COMMAND_ACTIONS */
         $expectedCounts = 10;
         $instanceRepo->expects(self::exactly($expectedCounts))->method('saveSaga');
 
         $processor = new SagaActionsProcessor(
-            $instanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $commandProducer
+            $instanceRepo,
+            $sagaSerializer,
+            $executionStateSerializer,
+            $messageIdGenerator,
+            $sagaLocker,
+            $replyMessageFactory,
+            $commandProducer
         );
         $processor->processActions($saga, $sagaInstance, $sagaData, $actions);
     }

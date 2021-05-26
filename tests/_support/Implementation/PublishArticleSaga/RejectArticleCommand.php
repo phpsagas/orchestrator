@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\PublishArticleSaga;
 
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\Command\LocalCommandInterface;
 
 /**

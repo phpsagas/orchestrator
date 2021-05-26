@@ -13,7 +13,7 @@
   "require": {
     "php": "^7.1 || ^8.0",
     "ext-json": "*",
-    "phpsagas/common": "dev-main",
+    "phpsagas/contracts": "dev-main",
     "psr/log": "^1.1"
   },
   "require-dev": {

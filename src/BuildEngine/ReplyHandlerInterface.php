@@ -2,7 +2,8 @@
 
 namespace PhpSagas\Orchestrator\BuildEngine;
 
-use PhpSagas\Common\Message\ReplyMessage;
+use PhpSagas\Contracts\ReplyMessageInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 
 /**
  * Should be implemented for commands expected results (for example, enrich sagaData with new data from reply
@@ -15,8 +16,8 @@ interface ReplyHandlerInterface
     /**
      * NOTE: Deserialize message payload inside the method.
      *
-     * @param ReplyMessage      $message
-     * @param SagaDataInterface $sagaData
+     * @param ReplyMessageInterface $message
+     * @param SagaDataInterface     $sagaData
      */
-    public function handle(ReplyMessage $message, SagaDataInterface $sagaData): void;
+    public function handle(ReplyMessageInterface $message, SagaDataInterface $sagaData): void;
 }

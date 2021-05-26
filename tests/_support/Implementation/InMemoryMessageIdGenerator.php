@@ -2,7 +2,7 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation;
 
-use PhpSagas\Common\Message\MessageIdGeneratorInterface;
+use PhpSagas\Contracts\MessageIdGeneratorInterface;
 
 /**
  * @author Oleg Filatov <phpsagas@gmail.com>

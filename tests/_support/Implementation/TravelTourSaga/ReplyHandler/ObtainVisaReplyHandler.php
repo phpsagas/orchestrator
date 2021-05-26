@@ -2,9 +2,9 @@
 
 namespace PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\ReplyHandler;
 
-use PhpSagas\Common\Message\ReplyMessage;
+use PhpSagas\Contracts\ReplyMessageInterface;
 use PhpSagas\Orchestrator\BuildEngine\ReplyHandlerInterface;
-use PhpSagas\Orchestrator\BuildEngine\SagaDataInterface;
+use PhpSagas\Contracts\SagaDataInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\CommandExecutionDetectorInterface;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\TravelTourSaga\BuyTourSagaData;
 
@@ -22,10 +22,10 @@ class ObtainVisaReplyHandler implements ReplyHandlerInterface
     }
 
     /**
-     * @param ReplyMessage                      $message
+     * @param ReplyMessageInterface             $message
      * @param SagaDataInterface|BuyTourSagaData $sagaData
      */
-    public function handle(ReplyMessage $message, SagaDataInterface $sagaData): void
+    public function handle(ReplyMessageInterface $message, SagaDataInterface $sagaData): void
     {
         $this->executionDetector->execute();
         if ($message->isSuccess()) {

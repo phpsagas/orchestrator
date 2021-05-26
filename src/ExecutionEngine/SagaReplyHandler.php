@@ -2,7 +2,8 @@
 
 namespace PhpSagas\Orchestrator\ExecutionEngine;
 
-use PhpSagas\Common\Message\ReplyMessage;
+use PhpSagas\Contracts\ReplyMessageInterface;
+use PhpSagas\Contracts\SagaSerializerInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaFactoryInterface;
 use PhpSagas\Orchestrator\InstantiationEngine\SagaInstanceInterface;
 use Psr\Log\LoggerInterface;
@@ -52,9 +53,9 @@ class SagaReplyHandler
     }
 
     /**
-     * @param ReplyMessage $message
+     * @param ReplyMessageInterface $message
      */
-    public function handleReply(ReplyMessage $message): void
+    public function handleReply(ReplyMessageInterface $message): void
     {
         $this->logger->info(
             'saga {saga_id} reply handler started on message {message_id}',
@@ -89,10 +90,12 @@ class SagaReplyHandler
      * Make sure given message is reply for last sending message (i.e. saga steps consistency has not been broken).
      *
      * @param SagaInstanceInterface $sagaInstance
-     * @param ReplyMessage          $message
+     * @param ReplyMessageInterface $message
      */
-    protected function ensureReplyMessageExpected(SagaInstanceInterface $sagaInstance, ReplyMessage $message): void
-    {
+    protected function ensureReplyMessageExpected(
+        SagaInstanceInterface $sagaInstance,
+        ReplyMessageInterface $message
+    ): void {
         if ($sagaInstance->getLastMessageId() !== $message->getCorrelationId()) {
             throw new HandleReplyFailedException(
                 sprintf(

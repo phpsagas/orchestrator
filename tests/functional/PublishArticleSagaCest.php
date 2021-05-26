@@ -19,6 +19,7 @@ use PhpSagas\Orchestrator\Tests\_support\Implementation\PublishArticleSaga\Check
 use PhpSagas\Orchestrator\Tests\_support\Implementation\PublishArticleSaga\DummyInitialData;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\PublishArticleSaga\PublishArticleSaga;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\PublishArticleSaga\PublishArticleSagaData;
+use PhpSagas\Orchestrator\Tests\_support\Implementation\ReplyMessageFactory;
 use PhpSagas\Orchestrator\Tests\_support\Implementation\SagaExecutionDetectorInterface;
 
 /**
@@ -59,7 +60,8 @@ class PublishArticleSagaCest
 
         $messageIdGenerator = new InMemoryMessageIdGenerator();
         $sagaLocker = new NullSagaLocker();
-        $processor = new SagaActionsProcessor($this->sagaInstanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $producer);
+        $replyMessageFactory = new ReplyMessageFactory();
+        $processor = new SagaActionsProcessor($this->sagaInstanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $replyMessageFactory, $producer);
         $sagaCreator = new SagaCreator($this->sagaInstanceRepo, $factory, $sagaLocker, $processor);
 
         $saga = new PublishArticleSaga($checkPlagiarismCommand, $sagaInitialData, $executionDetector);
@@ -101,7 +103,8 @@ class PublishArticleSagaCest
 
         $messageIdGenerator = new InMemoryMessageIdGenerator();
         $sagaLocker = new NullSagaLocker();
-        $processor = new SagaActionsProcessor($this->sagaInstanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $producer);
+        $replyMessageFactory = new ReplyMessageFactory();
+        $processor = new SagaActionsProcessor($this->sagaInstanceRepo, $sagaSerializer, $executionStateSerializer, $messageIdGenerator, $sagaLocker, $replyMessageFactory, $producer);
         $sagaCreator = new SagaCreator($this->sagaInstanceRepo, $factory, $sagaLocker, $processor);
 
         $saga = new PublishArticleSaga($checkPlagiarismCommand, $sagaInitialData, $executionDetector);
