@@ -22,7 +22,7 @@ There are two ways to coordinate the saga execution:
 - _choreography_ - services publish and subscribes to domain events;
 - _orchestration_ - execution is managed by special service that controls transactions sequence and said services that they must do. This framework implements that approach.
   
-More details about sagas you can found on the [Chris Richardson site](https://chrisrichardson.net/post/microservices/2019/07/09/developing-sagas-part-1.html) or in his great book [Microservices Patterns](https://microservices.io/book).  
+More details about sagas you can find on the [Chris Richardson site](https://chrisrichardson.net/post/microservices/2019/07/09/developing-sagas-part-1.html) or in his great book [Microservices Patterns](https://microservices.io/book).  
 
 ## Requirements  
 - php: >= 7.1
